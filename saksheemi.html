@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Password Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgb(45, 45, 153);
+            background-size: cover;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+        }
+        .container {
+            background: beige;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(20px);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #6797a3;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3d57ad;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #password-display {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Password Generator</h1>
+    <div class="container">
+        <div>
+            <label for="length">Password Length:</label>
+            <input type="number" id="length" min="4" max="50" value="12">
+        </div>
+        <div>
+            <label><input type="checkbox" id="uppercase" checked> Include uppercase letters</label>
+            <label><input type="checkbox" id="lowercase" checked> Include lowercase letters</label>
+            <label><input type="checkbox" id="numbers" checked> Include numbers</label>
+            <label><input type="checkbox" id="special" checked> Include special characters</label>
+        </div>
+        <button id="generate">Generate Password</button>
+        <div id="password-display"></div>
+    </div>
+
+    <script>
+        document.getElementById('generate').addEventListener('click', function() {
+            const length = parseInt(document.getElementById('length').value);
+            const upper = document.getElementById('uppercase').checked;
+            const lower = document.getElementById('lowercase').checked;
+            const num = document.getElementById('numbers').checked;
+            const spec = document.getElementById('special').checked;
+
+            const password = generatePassword(length, upper, lower, num, spec);
+            document.getElementById('password-display').innerHTML = `<p><strong>Generated Password:</strong> ${password}</p>`;
+        });
+
+        function generatePassword(length, upper, lower, num, spec) {
+            const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
+            const numChars = '0123456789';
+            const specChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            let allChars = '';
+            if (upper) allChars += upperChars;
+            if (lower) allChars += lowerChars;
+            if (num) allChars += numChars;
+            if (spec) allChars += specChars;
+
+            if (allChars === '') return 'Please select at least one option';
+
+            let password = '';
+
+            // Ensure at least one of each selected type
+            if (upper) password += upperChars[Math.floor(Math.random() * upperChars.length)];
+            if (lower) password += lowerChars[Math.floor(Math.random() * lowerChars.length)];
+            if (num) password += numChars[Math.floor(Math.random() * numChars.length)];
+            if (spec) password += specChars[Math.floor(Math.random() * specChars.length)];
+
+            // Fill the rest
+            for (let i = password.length; i < length; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+
+            // Shuffle the password to randomize order
+            password = password.split('').sort(() => Math.random() - 0.5).join('');
+
+            return password;
+        }
+    </script>
+</body>
+</html>
